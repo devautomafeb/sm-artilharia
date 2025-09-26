@@ -1,0 +1,42 @@
+@import "tailwindcss";
+@import 'leaflet/dist/leaflet.css';
+
+
+/* ---------- Component Classes ---------- */
+@layer components {
+  .card {
+    @apply rounded-2xl bg-white shadow-[0_10px_25px_-10px_rgba(0,0,0,0.15)] border border-slate-200;
+    backdrop-filter: blur(4px);
+  }
+
+  .label { @apply text-xs font-medium text-slate-600; }
+
+  /* NÃO use @apply input aqui; repita os utilitários nas duas */
+  .input {
+    @apply w-full rounded-xl border border-slate-300 bg-white px-3 py-2 outline-none transition
+           focus:border-blue-500 focus:ring-4 focus:ring-blue-100;
+  }
+
+  .select {
+    @apply w-full rounded-xl border border-slate-300 bg-white px-3 py-2 outline-none transition
+           focus:border-blue-500 focus:ring-4 focus:ring-blue-100;
+  }
+
+  .pill { @apply inline-flex items-center gap-2 rounded-full bg-slate-100 px-3 py-1 text-xs text-slate-700; }
+
+  .btn-toggle { @apply px-4 py-2 text-sm transition; }
+  .btn-toggle-active { @apply bg-blue-600 text-white; }
+  .btn-toggle-idle { @apply bg-white text-slate-700; }
+}
+
+/* ---------- Enhancements ---------- */
+input[type="range"] { @apply appearance-none h-1 rounded bg-slate-200; }
+input[type="range"]::-webkit-slider-thumb{
+  -webkit-appearance:none; appearance:none;
+  height:18px;width:18px;border-radius:9999px;background:#2563eb;border:2px solid #fff;
+  box-shadow:0 0 0 2px rgb(37 99 235 / 0.3); cursor:pointer;
+}
+input[type="range"]::-moz-range-thumb{
+  height:18px;width:18px;border-radius:9999px;background:#2563eb;border:2px solid #fff;
+  box-shadow:0 0 0 2px rgb(37 99 235 / 0.3); cursor:pointer;
+}
