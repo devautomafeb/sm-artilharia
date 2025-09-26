@@ -18,7 +18,7 @@ export default function App() {
             SM Artilharia
           </h1>
           <p className="text-slate-300 mt-2 text-sm md:text-base font-medium text-center">
-            Sistema de Cálculo de Elementos de Tiro • Obus 105 mm • BtlArtFuzNav
+            Sistema de Cálculo de Elementos de Tiro • Obus 105 mm • 
           </p>
         </div>
       </header>
@@ -36,7 +36,7 @@ export default function App() {
           </p>
           <p className="mt-1">
             <span className="text-red-500 font-bold">105mm</span> • Elevação & Deriva •
-            <span className="text-blue-500 font-bold"> BtlArtFuzNav</span>
+            <span className="text-blue-500 font-bold"> </span>
           </p>
           <p className="mt-1 text-slate-400">
             Desenvolvido com React + TypeScript + TailwindCSS
