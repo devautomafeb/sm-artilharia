@@ -11,15 +11,22 @@ export default function LayerSync({
   onBaseMapChange: (b: BaseMap) => void;
 }) {
   const map = useMap();
+
   useEffect(() => {
     const onChange = (e: any) => {
-      const name: string = e.name || "";
+      const name: string = e?.name ?? "";
       if (name.includes("OpenStreetMap")) onBaseMapChange("roadmap");
       else if (name.includes("OpenTopoMap")) onBaseMapChange("terrain");
       else if (name.includes("Esri")) onBaseMapChange("satellite");
     };
+
     map.on("baselayerchange", onChange);
-    return () => map.off("baselayerchange", onChange);
-  }, [map, onBaseMapChange, baseMap]);
+
+    // ✅ cleanup deve ser uma função que não retorna nada
+    return () => {
+      map.off("baselayerchange", onChange);
+    };
+  }, [map, onBaseMapChange /* baseMap não é necessário aqui */]);
+
   return null;
 }
