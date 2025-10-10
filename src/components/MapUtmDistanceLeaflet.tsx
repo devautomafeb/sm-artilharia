@@ -192,7 +192,8 @@ export default function MapUtmDistanceLeaflet() {
             </LayersControl.BaseLayer>
           </LayersControl>
 
-          <LayerSync baseMap={baseMap} onBaseMapChange={setBaseMap} />
+          <LayerSync onBaseMapChange={setBaseMap} />
+
           <ClickCapture active={activeTarget} onPick={handlePick} />
           <FitBounds p1={p1 ?? undefined} p2={p2 ?? undefined} padding={80} />
 

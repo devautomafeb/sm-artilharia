@@ -3,11 +3,10 @@ import { useMap } from "react-leaflet";
 
 export type BaseMap = "roadmap" | "terrain" | "satellite";
 
+// Agora só precisa de onBaseMapChange
 export default function LayerSync({
-  baseMap,
   onBaseMapChange,
 }: {
-  baseMap: BaseMap;
   onBaseMapChange: (b: BaseMap) => void;
 }) {
   const map = useMap();
@@ -21,12 +20,10 @@ export default function LayerSync({
     };
 
     map.on("baselayerchange", onChange);
-
-    // ✅ cleanup deve ser uma função que não retorna nada
     return () => {
       map.off("baselayerchange", onChange);
     };
-  }, [map, onBaseMapChange /* baseMap não é necessário aqui */]);
+  }, [map, onBaseMapChange]);
 
   return null;
 }
