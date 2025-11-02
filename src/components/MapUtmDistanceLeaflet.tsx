@@ -75,7 +75,27 @@ export default function MapUtmDistanceLeaflet() {
   const bearingDeg = useMemo(() => (p1 && p2 ? initialBearingDegrees(p1, p2) : null), [p1, p2]);
 
   // Drift (placeholder) — ajuste com seu modelo real se necessário
-  const driftMil = useMemo(() => (distMeters ? 1.5 * (distMeters / 1000) : null), [distMeters]);
+// Drift normalizada para o intervalo [2800, 3200]
+const driftMil = useMemo(() => {
+  if (!distMeters) return null;
+
+  // Cálculo base (pode ser substituído por seu modelo real)
+  const baseDrift = 1.5 * (distMeters / 1000);
+
+  // Normalização linear:
+  // primeiro, definimos um intervalo de entrada estimado (ex: 0 a 10 mil)
+  const minInput = 0;
+  const maxInput = 10; // km — ajuste se necessário conforme o alcance real
+
+  // Limitamos o valor base ao intervalo de entrada
+  const clamped = Math.min(Math.max(baseDrift, minInput), maxInput);
+
+  // Mapeamos o valor para o intervalo [2800, 3200]
+  const normalized = 2800 + ((clamped - minInput) / (maxInput - minInput)) * (3200 - 2800);
+
+  return normalized;
+}, [distMeters]);
+
 
   // Ícones (Leaflet DivIcon) — círculos coloridos sem PNG externo
   const markerIcon1 = useMemo(() => {

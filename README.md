@@ -1,69 +1,52 @@
-# React + TypeScript + Vite
+# Calculadora de Artilharia (sistema de cálculo — branch `sm4`)
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+> Aplicação para cálculo balístico/elementos de tiro para artilharia leve — conjunto de utilitários para predição de elevação e deriva a partir de coordenada inicial, tabelas de tiro e parâmetros do obus 105mm.
 
-Currently, two official plugins are available:
+**Repositório:** https://github.com/devautomafeb/sm-artilharia/tree/sm4
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+---
 
-## Expanding the ESLint configuration
+## 📌 Visão geral
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+Este projeto fornece uma interface e bibliotecas para:
+- Calcular **elevação** e **deriva** necessários para tiro de artilharia leve (ex.: obus 105mm).
+- Trabalhar com coordenadas iniciais (UTM / WGS84) e transformar entre sistemas.
+- Aplicar **tabelas de tiro** (curvas balísticas, ajustes por vento, temperatura, pressão, altitude).
+- Simular saídas e gerar ajustes para o apontador/condutor de tiro.
 
-```js
-export default tseslint.config([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+O código é escrito majoritariamente em **TypeScript** e usa **Vite + React** no front-end (estrutura já presente no branch `sm4`).
 
-      // Remove tseslint.configs.recommended and replace with this
-      ...tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      ...tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      ...tseslint.configs.stylisticTypeChecked,
+---
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+## ⚙️ Funcionalidades (prováveis / implementadas)
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+> Ajuste conforme o que já existe no `src/` — abaixo são exemplos úteis para documentar.
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+- Conversão UTM ↔ WGS84.
+- Cálculo de distância (Haversine), rumo inicial e diferença de altitude.
+- Conversão de ângulos para mils (6000 / 6400 conforme configuração).
+- Predição de elevação e deriva usando tabelas de tiro (entrada: distância, munição, carga, condições atmosféricas).
+- UI para inserir coordenadas, parâmetros meteorológicos e selecionar munição/tabela.
+- Exportar resultados (CSV / JSON) para posteamento no sistema de tiro.
 
-export default tseslint.config([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+---
+
+## 🧩 Pré-requisitos
+
+- Node.js >= 18 (recomendado)
+- npm ou yarn
+- Git
+
+---
+
+## 🔧 Instalação (desenvolvimento)
+
+```bash
+# clonar branch sm4
+git clone --branch sm4 https://github.com/devautomafeb/sm-artilharia.git
+cd sm-artilharia
+
+# instalar dependências
+npm install
+# ou
+# yarn

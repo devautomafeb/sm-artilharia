@@ -1,15 +1,14 @@
-// Define o tipo das props que o componente recebe.
-// Cada campo representa um resultado calculado que será exibido na interface.
+import { useState, useMemo } from "react";
+
 type Props = {
-  siteDeg: number | null; // ângulo de elevação geométrica em graus
-  milsBase: 6400 | 6000; // base angular em mils usada (padrão NATO ou OTAN)
-  toMils: (deg: number | null, base: 6400 | 6000) => number | null; // função de conversão grau→mil
-  driftMil: number | null; // deriva lateral (em mils)
-  bearingDeg: number | null; // azimute/direção do tiro (em graus)
-  distMeters: number | null; // distância entre os pontos (em metros)
+  siteDeg: number | null;
+  milsBase: 6400 | 6000;
+  toMils: (deg: number | null, base: 6400 | 6000) => number | null;
+  driftMil: number | null;
+  bearingDeg: number | null;
+  distMeters: number | null;
 };
 
-// Componente que exibe um painel visual com as saídas dos cálculos de tiro/medição.
 export default function OutputsPanel({
   siteDeg,
   milsBase,
@@ -18,77 +17,128 @@ export default function OutputsPanel({
   bearingDeg,
   distMeters,
 }: Props) {
+  const [qm, setQm] = useState<number>(0);
+  const [corrDeriva, setCorrDeriva] = useState<number>(0);
+  const [corrAlcance, setCorrAlcance] = useState<number>(0);
+
+  const bearingMil = useMemo(
+    () => (bearingDeg == null ? null : toMils(bearingDeg, milsBase)),
+    [bearingDeg, milsBase, toMils]
+  );
+
+  const dgt = useMemo(() => {
+    if (bearingMil == null) return null;
+    const val = milsBase - bearingMil - qm;
+    return val < 0 ? val + milsBase : val;
+  }, [bearingMil, milsBase, qm]);
+
   return (
-    // Painel principal com gradiente de fundo e bordas personalizadas.
     <div
-      className="rounded-2xl p-4 border shadow"
+      className="w-full col-span-full rounded-2xl p-4 border shadow-lg max-w-none"
       style={{
-        background: "linear-gradient(135deg,#556B2F 0%,#3d4d24 100%)", // verde-oliva degradê
-        borderColor: "#495c27", // tom escuro para combinar com o fundo
+        background: "linear-gradient(135deg,#111 0%,#000 100%)", // 🔥 fundo preto degradê
+        borderColor: "#333", // borda cinza-escura
       }}
     >
-      {/* Título do painel */}
-      <div className="text-sm font-semibold text-white/90 mb-3">
-        Saídas
+      <div className="text-sm font-semibold text-yellow-100 mb-3">
+        Saídas (Cálculos Balísticos)
       </div>
 
-      {/* Grade responsiva:
-          - 1 coluna em telas pequenas
-          - 2 colunas em telas médias
-          - 4 colunas em telas grandes */}
-      <div className="grid md:grid-cols-4 sm:grid-cols-2 grid-cols-1 gap-3">
+      <div className="grid w-full gap-3 [grid-template-columns:repeat(auto-fit,minmax(140px,1fr))] auto-rows-fr">
 
-        {/* --- BLOCO 1: Elevação geométrica --- */}
-        <div className="rounded-xl bg-white/10 backdrop-blur border border-white/20 p-3 text-center">
-          <div className="text-[11px] text-white/70">Elevação (geom.)</div>
-          <div className="text-xl font-semibold text-white">
-            {siteDeg == null ? "—" : `${siteDeg.toFixed(3)}°`}
-          </div>
-          <div className="text-[11px] text-white/80">
-            {siteDeg == null
-              ? ""
-              : `${(toMils(siteDeg, milsBase) ?? 0).toFixed(2)} mil`}
-          </div>
+        {/* QM */}
+        <div className="flex flex-col justify-center rounded-xl bg-yellow-900/20 border border-yellow-600/40 p-3 text-center shadow-inner">
+          <div className="text-[11px] text-yellow-200/80">QM (constante)</div>
+          <input
+            type="number"
+            className="w-24 mx-auto mt-1 rounded bg-yellow-950/30 text-center text-yellow-100 border border-yellow-700/40 text-sm"
+            value={qm}
+            onChange={(e) => setQm(Number(e.target.value))}
+          />
+          <div className="text-[11px] text-yellow-200/70 mt-1">mil</div>
         </div>
 
-        {/* --- BLOCO 2: Deriva estimada --- */}
-        <div className="rounded-xl bg-white/10 backdrop-blur border border-white/20 p-3 text-center">
-          <div className="text-[11px] text-white/70">Deriva (estim.)</div>
-          <div className="text-xl font-semibold text-white">
-            {driftMil == null ? "—" : `${driftMil.toFixed(2)} mil`}
-          </div>
-          <div className="text-[11px] text-white/80">sentido → direita</div>
+        {/* Correção de Deriva */}
+        <div className="flex flex-col justify-center rounded-xl bg-yellow-900/20 border border-yellow-600/40 p-3 text-center shadow-inner">
+          <div className="text-[11px] text-yellow-200/80">Correção de Deriva</div>
+          <input
+            type="number"
+            className="w-24 mx-auto mt-1 rounded bg-yellow-950/30 text-center text-yellow-100 border border-yellow-700/40 text-sm"
+            value={corrDeriva}
+            onChange={(e) => setCorrDeriva(Number(e.target.value))}
+          />
+          <div className="text-[11px] text-yellow-200/70 mt-1">mil</div>
         </div>
 
-        {/* --- BLOCO 3: Direção (azimute) --- */}
-        <div className="rounded-xl bg-white/10 backdrop-blur border border-white/20 p-3 text-center">
-          <div className="text-[11px] text-white/70">Direção (azimute)</div>
-          <div className="text-xl font-semibold text-white">
-            {bearingDeg == null ? "—" : `${bearingDeg.toFixed(2)}°`}
-          </div>
-          <div className="text-[11px] text-white/80">
-            {bearingDeg == null
-              ? ""
-              : `${(toMils(bearingDeg, milsBase) ?? 0).toFixed(2)} mil`}
-          </div>
+        {/* Correção de Alcance */}
+        <div className="flex flex-col justify-center rounded-xl bg-yellow-900/20 border border-yellow-600/40 p-3 text-center shadow-inner">
+          <div className="text-[11px] text-yellow-200/80">Correção de Alcance</div>
+          <input
+            type="number"
+            className="w-24 mx-auto mt-1 rounded bg-yellow-950/30 text-center text-yellow-100 border border-yellow-700/40 text-sm"
+            value={corrAlcance}
+            onChange={(e) => setCorrAlcance(Number(e.target.value))}
+          />
+          <div className="text-[11px] text-yellow-200/70 mt-1">m</div>
         </div>
 
-        {/* --- BLOCO 4: Distância --- */}
-        <div className="rounded-xl bg-white/10 backdrop-blur border border-white/20 p-3 text-center">
-          <div className="text-[11px] text-white/70">Distância</div>
-          <div className="text-xl font-semibold text-white">
+        {/* Distância */}
+        <div className="flex flex-col justify-center rounded-xl bg-yellow-900/20 border border-yellow-600/40 p-3 text-center shadow-inner">
+          <div className="text-[11px] text-yellow-200/80">Distância</div>
+          <div className="text-xl font-semibold text-yellow-100">
             {distMeters == null ? "—" : `${distMeters.toFixed(0)} m`}
           </div>
-          <div className="text-[11px] text-white/80">
-            {distMeters == null
-              ? ""
-              : `${(distMeters / 1000).toFixed(3)} km`}
+          <div className="text-[11px] text-yellow-200/70">
+            {distMeters == null ? "" : `${(distMeters / 1000).toFixed(3)} km`}
+          </div>
+        </div>
+
+        {/* Lançamento */}
+        <div className="flex flex-col justify-center rounded-xl bg-yellow-900/20 border border-yellow-600/40 p-3 text-center shadow-inner">
+          <div className="text-[11px] text-yellow-200/80">Lançamento (azimute carta)</div>
+          <div className="text-xl font-semibold text-yellow-100">
+            {bearingMil == null ? "—" : `${bearingMil.toFixed(2)} mil`}
+          </div>
+          <div className="text-[11px] text-yellow-200/70 mb-1">
+            {bearingDeg == null ? "" : `${bearingDeg.toFixed(2)}°`}
+          </div>
+        </div>
+
+        {/* DGT */}
+        <div className="flex flex-col justify-center rounded-xl bg-yellow-900/20 border border-yellow-600/40 p-3 text-center shadow-inner">
+          <div className="text-[11px] text-yellow-200/80">DGT (Direção Geral de Tiro)</div>
+          <div className="text-xl font-semibold text-yellow-100">
+            {dgt == null ? "—" : `${dgt.toFixed(0)} mil`}
+          </div>
+          <div className="text-[11px] text-yellow-200/70">
+            Base {milsBase} − Lanç. − QM
+          </div>
+        </div>
+
+        {/* Deriva */}
+        <div className="flex flex-col justify-center rounded-xl bg-yellow-900/20 border border-yellow-600/40 p-3 text-center shadow-inner">
+          <div className="text-[11px] text-yellow-200/80">Deriva (estim.)</div>
+          <div className="text-xl font-semibold text-yellow-100">
+            {driftMil == null ? "—" : `${driftMil.toFixed(0)} mil`}
+          </div>
+          <div className="text-[11px] text-yellow-200/70">sentido → direita</div>
+        </div>
+
+        {/* Elevação */}
+        <div className="flex flex-col justify-center rounded-xl bg-yellow-900/20 border border-yellow-600/40 p-3 text-center shadow-inner">
+          <div className="text-[11px] text-yellow-200/80">Elevação (geom.)</div>
+          <div className="text-xl font-semibold text-yellow-100">
+            {siteDeg == null
+              ? "—"
+              : `${(toMils(siteDeg, milsBase) ?? 0).toFixed(0)} mil`}
+          </div>
+          <div className="text-[11px] text-yellow-200/70">
+            {siteDeg == null ? "" : `${siteDeg.toFixed(0)}°`}
           </div>
         </div>
       </div>
 
-      {/* Observação no rodapé */}
-      <div className="text-[11px] text-white/80 mt-3">
+      <div className="text-[11px] text-yellow-200/70 mt-3">
         Obs.: Sítio/Elevação são geométricos (linha de visada).
       </div>
     </div>
