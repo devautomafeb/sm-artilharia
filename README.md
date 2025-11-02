@@ -42,8 +42,8 @@ O código é escrito majoritariamente em **TypeScript** e usa **Vite + React** n
 ## 🔧 Instalação (desenvolvimento)
 
 ```bash
-# clonar branch sm4
-git clone --branch sm4 https://github.com/devautomafeb/sm-artilharia.git
+# clonar branch sm5
+git clone --branch sm5 https://github.com/devautomafeb/sm-artilharia.git
 cd sm-artilharia
 
 # instalar dependências
