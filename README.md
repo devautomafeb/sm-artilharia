@@ -1,4 +1,4 @@
-# Calculadora de Artilharia (sistema de cálculo — branch `sm4`)
+# Calculadora de Artilharia (sistema de cálculo — branch `sm5`)
 
 > Aplicação para cálculo balístico/elementos de tiro para artilharia leve — conjunto de utilitários para predição de elevação e deriva a partir de coordenada inicial, tabelas de tiro e parâmetros do obus 105mm.
 
